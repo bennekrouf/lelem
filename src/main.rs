@@ -1,12 +1,21 @@
 mod ollama;
 mod models;
 mod generate_json;
+mod api_db;
 
 use std::error::Error;
 use crate::generate_json::generate_json;
+use crate::api_db::load_config_to_sled;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // Paths to configuration and database
+    let config_path = "config.yaml";  // Path to your YAML file
+    let db_path = "./api_db";  // Path where Sled database will be stored
+
+    // Load configuration into Sled DB
+    load_config_to_sled(config_path, db_path, false)?;
+
     // Example prompts
     let prompts = vec![
         "send an email to John@gmail.com which title is new report and body is hello john here is the report",

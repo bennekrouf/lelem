@@ -34,24 +34,6 @@ pub async fn generate_json(model: &str, sentence: &str) -> Result<serde_json::Va
         sentence, sentence
     );
 
-    // let request_body = GenerateRequest {
-    //     model: model.to_string(),
-    //     prompt: full_prompt,
-    //     stream: false,
-    //     format: Some("json".to_string()),
-    // };
-    //
-    // // Perform the HTTP request
-    // let response = client.post("http://localhost:11434/api/generate")
-    //     .json(&request_body)
-    //     .send()
-    //     .await?;
-    //
-    // // Collect the full response text
-    // let response_obj = response.json::<OllamaResponse>().await?;
-    // let full_response_text = response_obj.response.trim().to_owned();
-
-
     let full_response_text = call_ollama(&model, &full_prompt).await?;
 
     // Attempt to parse the JSON
