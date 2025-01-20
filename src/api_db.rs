@@ -1,28 +1,9 @@
-use serde::{Deserialize, Serialize};
+// use serde::{Deserialize, Serialize};
 use sled;
 use serde_yaml;
 use std::error::Error;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-struct Endpoint {
-    id: String,
-    text: String,
-    description: String,
-    parameters: Vec<Parameter>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-struct Parameter {
-    name: String,
-    description: String,
-    required: bool,
-    alternatives: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ConfigFile {
-    endpoints: Vec<Endpoint>,
-}
+use crate::models::{Endpoint, Parameter, ConfigFile};
 
 /// Loads configuration from a YAML file into a Sled database
 pub fn load_config_to_sled(config_path: &str, db_path: &str, force: bool) -> Result<(), Box<dyn Error>> {
