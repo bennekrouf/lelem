@@ -11,13 +11,25 @@ pub async fn find_matching_endpoint(
     db: &sled::Db, 
     ollama_client: &OllamaClient
 ) -> Result<Vec<Endpoint>, Box<dyn Error>> {
-    // Extract the input description
+    // Extract the input description and fields
     let input_description = input_json["endpoints"][0]["description"]
         .as_str()
         .unwrap_or("");
     
+    // Extract all fields as a formatted string
+    let input_fields = input_json["endpoints"][0]["fields"]
+        .as_object()
+        .map(|fields| {
+            fields.iter()
+                .map(|(key, value)| format!("{}: {}", key, value))
+                .collect::<Vec<String>>()
+                .join(", ")
+        })
+        .unwrap_or_default();
+
     info!("Starting endpoint matching process");
     debug!("Input Description: {}", input_description);
+    debug!("Input Fields: {}", input_fields);
 
     // Open the database
     let db_entries: Vec<_> = db.iter()
@@ -46,7 +58,10 @@ pub async fn find_matching_endpoint(
     while !endpoints.is_empty() {
         // Prepare prompt for comparison
         let prompt = format!(
-            "Compare these two sets of endpoint details:\n\n\
+            "Compare these two endpoint details in the context of the input description and fields:\n\n\
+            Input Context:\n\
+            - Description: {}\n\
+            - Fields: {}\n\n\
             Reference Endpoint:\n\
             - ID: {}\n\
             - Text: {}\n\
@@ -55,19 +70,24 @@ pub async fn find_matching_endpoint(
             - ID: {}\n\
             - Text: {}\n\
             - Description: {}\n\n\
-            Task: Determine which is closer to the original input description: '{}'.\n\n\
+            Task: Determine which endpoint is more semantically similar to the input.\n\
+            Consider:\n\
+            1. Description match\n\
+            2. Action similarity\n\
+            3. Potential to handle the input fields\n\n\
             Respond ONLY with a JSON:\n\
             {{\n\
               \"closer_endpoint\": \"reference\" or \"candidate\",\n\
               \"similarity_reasoning\": \"Explain why this endpoint is closer\"\n\
             }}",
+            input_description,
+            input_fields,
             closest_endpoint.id,
             closest_endpoint.text,
             closest_endpoint.description,
             endpoints[0].id,
             endpoints[0].text,
-            endpoints[0].description,
-            input_description
+            endpoints[0].description
         );
 
         // Log the current comparison
