@@ -33,30 +33,6 @@ pub async fn match_fields(
         input_fields, parameters
     );
 
-    let response = ollama_client.generate_json("llama2", &prompt).await?;
+    let response = ollama_client.generate_json(&prompt).await?;
     Ok(response)
-
-    //let input_fields = input_json["endpoints"][0]["fields"]
-    //    .as_object()
-    //    .map(|fields| {
-    //        fields
-    //            .iter()
-    //            .map(|(k, v)| format!("{}: {}", k, v))
-    //            .collect::<Vec<_>>()
-    //            .join(", ")
-    //    })
-    //    .unwrap_or_default();
-    //
-    //let prompt = format!(
-    //    "Map input fields to endpoint parameters:\n\
-    //    Input fields: {}\n\
-    //    Endpoint parameters: {:?}\n\
-    //    Format response as endpoint JSON with mapped values",
-    //    input_fields, closest_endpoint.parameters
-    //);
-    //
-    //let response_json = ollama_client.generate_json("llama2", &prompt).await?;
-    //let mapped_endpoint: Endpoint = serde_json::from_value(response_json)?;
-    //
-    //Ok(mapped_endpoint)
 }

@@ -67,8 +67,8 @@ endpoints:
           - "issue_content"
 
   - id: "schedule_meeting"
-    text: "schedule meeting"
-    description: "Schedule a meeting or appointment"
+    text: "schedule meeting is very different from sending an email"
+    description: "Schedule a meeting or appointment is very different from sending an email"
     parameters:
       - name: "date"
         description: "Meeting date"
@@ -246,7 +246,7 @@ endpoints:
           - "compression_type"
 
   - id: "process_payment"
-    text: "process payment means paying something about business and paiement not send email"
+    text: "process payment means paying something about business and payment transaction"
     description: "Process a customer payment"
     parameters:
       - name: "amount"

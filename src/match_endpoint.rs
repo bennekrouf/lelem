@@ -54,7 +54,7 @@ pub async fn find_matching_endpoint(
             endpoints[0].description
         );
 
-        let response_json = ollama_client.generate_json("llama2", &prompt).await?;
+        let response_json = ollama_client.generate_json(&prompt).await?;
         closest_endpoint = if response_json
             .get("closer_endpoint")
             .and_then(|v| v.as_str())

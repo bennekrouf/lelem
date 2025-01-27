@@ -1,11 +1,9 @@
 use reqwest;
 use std::error::Error;
 
-use crate::ollama::call_ollama;
+use crate::ollama_client::call_ollama;
 
-pub async fn generate_json(model: &str, sentence: &str) -> Result<serde_json::Value, Box<dyn Error>> {
-    let client = reqwest::Client::new();
-    
+pub async fn generate_json(sentence: &str) -> Result<serde_json::Value, Box<dyn Error>> {
     let full_prompt = format!(
         "Sentence: {}\n\n\
         Task: Generate a precise, minimal JSON structure based strictly on the sentence.\n\n\
@@ -34,7 +32,7 @@ pub async fn generate_json(model: &str, sentence: &str) -> Result<serde_json::Va
         sentence, sentence
     );
 
-    let full_response_text = call_ollama(&model, &full_prompt).await?;
+    let full_response_text = call_ollama(&full_prompt).await?;
 
     // Attempt to parse the JSON
     let parsed_json: serde_json::Value = serde_json::from_str(&full_response_text)

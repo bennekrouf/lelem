@@ -1,11 +1,10 @@
-use crate::{models::Endpoint, ollama::call_ollama, ollama_client::OllamaClient};
+use crate::{models::Endpoint, ollama_client::call_ollama};
 use serde_json::Value;
 use std::error::Error;
 
 pub async fn generate_confirmation(
     json: &Value,
     endpoint: &Endpoint,
-    ollama_client: &OllamaClient,
 ) -> Result<String, Box<dyn Error>> {
     let fields = json
         .as_object()
@@ -29,6 +28,6 @@ pub async fn generate_confirmation(
         endpoint.description, fields
     );
 
-    let response = call_ollama("llama2", &prompt).await?;
+    let response = call_ollama(&prompt).await?;
     Ok(response)
 }

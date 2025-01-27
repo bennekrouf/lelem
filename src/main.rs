@@ -4,7 +4,6 @@ mod generate_json;
 mod match_endpoint;
 mod match_fields;
 mod models;
-mod ollama;
 mod ollama_client;
 
 use crate::api_db::load_config_to_sled;
@@ -13,7 +12,7 @@ use crate::generate_json::generate_json;
 use crate::match_endpoint::find_matching_endpoint;
 use crate::ollama_client::OllamaClient;
 use match_fields::match_fields;
-use std::error::{self, Error};
+use std::error::Error;
 use tracing::{error, info};
 use tracing_subscriber;
 
@@ -33,13 +32,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // Example prompts
     let prompts = vec![
-        //"send an email to John@gmail.com which title is new report and body is hello john here is the report",
-        //"create a ticket with high priority titled server down and description is production server not responding",
-        //"schedule a meeting tomorrow at 2pm for 1 hour with the dev team to discuss project status",
-        //"analyze logs for auth-service from january 1st to today with error level",
-        //"deploy application user-service version 2.1.0 to production with rollback to 2.0.9",
-        //"generate monthly sales report in PDF format",
-        //"backup database users with full backup and high compression",
+        "send an email to John@gmail.com which title is new report and body is hello john here is the report",
+        "create a ticket with high priority titled server down and description is production server not responding",
+        "schedule a meeting tomorrow at 2pm for 1 hour with the dev team to discuss project status",
+        "analyze logs for auth-service from january 1st to today with error level",
+        "deploy application user-service version 2.1.0 to production with rollback to 2.0.9",
+        "generate monthly sales report in PDF format",
+        "backup database users with full backup and high compression",
         "process payment of 500 USD from customer 12345 using credit card",
     ];
 
@@ -47,7 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         println!("\nPrompt: {}", prompt);
 
         // Generate JSON
-        match generate_json("llama2", prompt).await {
+        match generate_json(prompt).await {
             Ok(json_response) => {
                 // Pretty print the JSON
                 println!(
@@ -77,7 +76,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                                     match generate_confirmation(
                                         &mapped_fields,
                                         &endpoint,
-                                        &ollama_client,
                                     )
                                     .await
                                     {
